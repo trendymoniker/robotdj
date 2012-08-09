@@ -1,0 +1,9 @@
+[Plugin]
+Loader=python
+Module=robotdj
+IAge=2
+Name=Robot DJ
+Description=He's just the best!
+Authors=Kevin Bache <kevin.bache@gmail.com>, Jimmy Founds <jrfoulds@gmail.com>
+Copyright=Copyright © 2012 Kevin Bache, Jimmy Foulds
+Website=http://www.google.com
