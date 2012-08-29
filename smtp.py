@@ -15,13 +15,22 @@ def main(username="alice", password="secret",
         yield client.select('INBOX')
 
         #print subjects for all new emails
-        info = yield client.fetchEnvelope(imap4.MessageSet(1))
-        print info[1]['ENVELOPE'][1]
+        messages = imap4.MessageSet(1,3)
+
+        for i,m in enumerate(messages):
+            info = yield client.fetchEnvelope(m)
+
+            print info
+            print info[i+1]['ENVELOPE'][1]
     except:
         log.err(failure.Failure(), "IMAP4 client interaction failed")
     reactor.stop()
 
-import sys
-username, password = get_username_password()
-main(username, password)
-reactor.run()
+if __name__ == "__main__":
+    import sys
+    if len(sys.argv) > 1:
+        username, password = get_username_password('kebenson@uci.edu')
+    else:
+        username, password = get_username_password()
+    main(username, password)
+    reactor.run()
