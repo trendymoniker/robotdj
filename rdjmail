@@ -1,0 +1,62 @@
+#! /usr/bin/python
+RDJMAIL_DESCRIPTION = '''RobotDJ email command-line interface for debugging and mockup interfaces.'''
+
+# @author: Kyle Benson
+# (c) Kyle Benson 2012
+
+import argparse
+#from os.path import isdir
+#from os import listdir
+
+from twisted.internet import reactor
+
+import smtp
+from get_username_password import *
+
+def ParseArgs():
+##################################################################################
+#################      ARGUMENTS       ###########################################
+# ArgumentParser.add_argument(name or flags...[, action][, nargs][, const][, default][, type][, choices][, required][, help][, metavar][, dest])
+# action is one of: store[_const,_true,_false], append[_const], count
+# nargs is one of: N, ?(defaults to const when no args), *, +, argparse.REMAINDER
+# help supports %(var)s: help='default value is %(default)s'
+##################################################################################
+
+    parser = argparse.ArgumentParser(description=RDJMAIL_DESCRIPTION,
+                                     #formatter_class=argparse.RawTextHelpFormatter,
+                                     #epilog='Text to display at the end of the help print',
+                                     )
+
+    parser.add_argument('--username', '-u', nargs='?',
+                        help='''Enter your email address with domain name: example@domain.com''')
+    
+
+    parser.add_argument('--send', '-s', nargs='?',
+                        help='''Send an email read entirely from input (default = STDIN)''')
+    parser.add_argument('--files', '-f', nargs='+',
+                        help='''file(s) from which to read email''')
+
+    parser.add_argument('--print_emails', '-p', action='store_true',
+                        help='''Print emails in the requested mailbox (default = INBOX)''')
+
+
+    return parser.parse_args()
+
+# Main
+if __name__ == "__main__":
+    
+    import sys
+
+    args = ParseArgs()
+    
+    if not args.username:
+        args.username, password = get_username_password()
+    else:
+        password = get_password()
+
+    if args.print_emails:
+        smtp.connect_client(args.username,password).addCallback(smtp.print_emails)
+
+    #smtp.main(args.username,password)
+
+    reactor.run()
